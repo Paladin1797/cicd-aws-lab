@@ -1,47 +1,41 @@
-name: Deploy AWS Infrastructure with Terraform
+name: Terraform CI/CD
 
-# Trigger the workflow on push or pull request to the main branch
 on:
   push:
     branches:
-      -main
+      - main
   pull_request:
     branches:
-      -main
+      - main
 
 jobs:
   terraform:
-    name: Infrastructure Deployment on AWS   #Name of the Job
-    runs-on: ubuntu-latest        # The type of runner to use
+    name: Terraform Workflow #Name of the Job
+    runs-on: ubuntu-latest # The type of runner to use
 
   #Environment Variables
     env:
-      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_ID}} # ACCESS Key ID
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # Secret Access Key ID
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}} # AWS Access Key ID
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRETS_ACCESS_KEY}} # AWS Secret Access Key
+  
 
     steps:
-      # Checkout the code from the repository
-      -name: Checkout Code
-       uses: actions/checkout@v2
-      # Install Terraform
-      -name: Set up Terraform
-       uses: hashicorp/setup-terraform@v1
-       with:
-        terraform_version: 1.0.0
-      # Initializa Terraform
-      -name: Initialize Terraform
-       run: terraform init
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      # Validate Terraform Configuration for errors
-      -name: Validate Terraform Configuration
-       run: terraform validate
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.0 # or the version you require
 
-      # Show execution plan
-      -name: Plan Terraform Deployment
-       run: terraform plan
+      - name: Terraform Init
+        run: terraform init
 
-       # Apply the Terraform configuration on Push or pull request
-       -name: Apply Terraform Deployment
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
         run: terraform apply -auto-approve
-
-    
