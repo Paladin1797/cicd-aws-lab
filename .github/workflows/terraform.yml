@@ -10,14 +10,8 @@ on:
 
 jobs:
   terraform:
-    name: Terraform Workflow #Name of the Job
-    runs-on: ubuntu-latest # The type of runner to use
-
-  #Environment Variables
-    env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}} # AWS Access Key ID
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRETS_ACCESS_KEY}} # AWS Secret Access Key
-  
+    name: Terraform Workflow
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
@@ -27,6 +21,13 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.8.0 # or the version you require
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1 # change to your region
 
       - name: Terraform Init
         run: terraform init
