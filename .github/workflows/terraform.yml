@@ -20,22 +20,28 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # Secret Access Key ID
 
     steps:
+      # Checkout the code from the repository
       -name: Checkout Code
-      uses: actions/checkout@v2
-
+       uses: actions/checkout@v2
+      # Install Terraform
       -name: Set up Terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
-          terraform_version: 1.0.0
-
+       uses: hashicorp/setup-terraform@v1
+       with:
+        terraform_version: 1.0.0
+      # Initializa Terraform
       -name: Initialize Terraform
-        run: terraform init
+       run: terraform init
 
+      # Validate Terraform Configuration for errors
       -name: Validate Terraform Configuration
-        run: terraform validate
+       run: terraform validate
 
-      -name: Validate Terraform Deployment
-        run: terraform plan
+      # Show execution plan
+      -name: Plan Terraform Deployment
+       run: terraform plan
 
-      -name: Apply Terraform Deployment
+       # Apply the Terraform configuration on Push or pull request
+       -name: Apply Terraform Deployment
         run: terraform apply -auto-approve
+
+    
